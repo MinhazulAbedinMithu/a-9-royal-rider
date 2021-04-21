@@ -19,7 +19,7 @@ const Destination = () => {
                 </div>
                 <div className="col-md-1"></div>
                 <div className="col-md-8">
-                    
+                <div></div>
                 </div>
             </div>
         </div>

@@ -48,6 +48,39 @@ const Login = () => {
         });
   
     }
+    const handleSubmit = (event) => {
+        if(newUser && user.email && user.password) {
+          firebase.auth().createUserWithEmailAndPassword(user.email, user.password)
+          .then((res) => {
+            console.log(res);
+            const loggedInUser = {...user};
+            loggedInUser.error = '';
+            loggedInUser.success = true;
+            setLoggedInUser(loggedInUser);
+            history.replace(from);
+          })
+          .catch((error) => {
+            var errorMessage = error.message;
+          });
+        }
+
+        const handleBlur = (event) => {
+            let isFieldValid = true;
+        
+            if(event.target.name === 'email'){
+              isFieldValid = /\S+@\S+\.\S+/.test(event.target.value);
+            }
+            if(event.target.name === 'password'){
+              isFieldValid =  /((?=.*\d)(?=.*[A-Z])(?=.*[a-z]).{8,})/.test(event.target.value);
+              // /((?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*\W).{8,})/ ===>>> number, upperCase, lowerCase, specialCharacter, minimumLength-8
+            }
+            if(isFieldValid){
+              const newUserInfo = {...user};
+              loggedInUser[event.target.name] = event.target.value;
+              setUser(loggedInUser);
+            }
+            
+          }
 
     window.onbeforeunload = function (e) {
         localStorage.clear();
@@ -64,10 +97,10 @@ const Login = () => {
                 </div>
                 <div className="col-md-8 mx-auto">
                     <h2>Login</h2>
-                    <form action="">
-                        <input type="email" className="form-control" name="email" id="email" placeholder="email"/>
+                    <form action=""  onSubmit={handleSubmit}>
+                        <input type="email" onBlur={handleBlur} className="form-control" name="email" id="email" placeholder="email"/>
                         <br/><br/>
-                        <input type="password" className="form-control" name="pass" id="pass" placeholder="password"/>
+                        <input type="password" onBlur={handleBlur} className="form-control" name="pass" id="pass" placeholder="password"/>
                         <br/>
                         <input type="submit" className="btn btn-primary" value="Login"/>
                     </form>
